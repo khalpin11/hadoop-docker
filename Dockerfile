@@ -12,7 +12,9 @@ RUN yum clean all; \
     rpm --rebuilddb; \
     yum install -y curl which tar sudo openssh-server openssh-clients rsync
 # update libselinux. see https://github.com/sequenceiq/hadoop-docker/issues/14
-RUN yum update -y libselinux
+RUN yum clean all;
+#RUN yum update -y libselinux
+RUN yum clean all;
 
 # passwordless ssh
 RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
@@ -22,9 +24,13 @@ RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 
 # java
-RUN curl -LO 'http://download.oracle.com/otn-pub/java/jdk/7u71-b14/jdk-7u71-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie'
-RUN rpm -i jdk-7u71-linux-x64.rpm
-RUN rm jdk-7u71-linux-x64.rpm
+RUN curl -LO 'http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie'
+RUN rpm -i jdk-8u121-linux-x64.rpm
+RUN rm jdk-8u121-linux-x64.rpm
+
+ENV JAVA_HOME /usr/java/default
+ENV PATH $PATH:$JAVA_HOME/bin
+RUN rm /usr/bin/java && ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 ENV JAVA_HOME /usr/java/default
 ENV PATH $PATH:$JAVA_HOME/bin
